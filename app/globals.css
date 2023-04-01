@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --text-xs: 25px;
+}
+
+.container-xs {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navHeading {
+    font-size: var(--text-xs);
+}

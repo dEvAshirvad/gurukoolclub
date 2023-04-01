@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client";
+import { getToken } from "next-auth/jwt";
 
 
 const prisma = new PrismaClient()
@@ -27,10 +28,17 @@ export const authOptions = {
         }),
     ],
     callbacks: {
-        async session({ session, token }) {
-            session.user.role = token.role
+        session: ({ session, token }) => {
+            session.user = token.token.user
             return session
+        },
+        jwt: (token) => {
+            return token
         }
+
+    },
+    pages: {
+        signIn: '/',
     }
 }
 

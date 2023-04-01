@@ -1,17 +1,18 @@
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]"
+import { getToken } from "next-auth/jwt"
 
 
 export default async (req, res) => {
-    const session = await getServerSession(req, res, authOptions)
+    const session = await getToken({ req })
 
     if (session) {
         res.json({
             "user": session
         })
-    } else {
-        res.json({
-            "user": null
-        })
     }
+
+    res.json({
+        "user": null
+    })
 }

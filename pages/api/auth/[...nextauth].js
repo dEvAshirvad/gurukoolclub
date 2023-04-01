@@ -7,7 +7,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient()
 
 export const authOptions = {
-    // Configure one or more authentication providers
     session: {
         strategy: 'jwt'
     },
@@ -15,10 +14,24 @@ export const authOptions = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            profile(profile) {
+                return {
+                    id: profile.sub,
+                    name: profile.name,
+                    email: profile.email,
+                    image: profile.picture,
+                    role: profile.role ?? "Subscriber"
+                }
+            }
         }),
-        // ...add more providers here
     ],
+    callbacks: {
+        async session({ session, token }) {
+            session.user.role = token.role
+            return session
+        }
+    }
 }
 
 export default NextAuth(authOptions)
